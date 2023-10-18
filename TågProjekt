@@ -1,0 +1,57 @@
+import datetime
+import requests
+
+api_key = '57ba6c3a29fcb1bef4d8e0213406d71b' #Nyckel till OpenWeather API
+tid = datetime.datetime.now()
+formatted_time = tid.strftime("%H:%M")
+
+
+
+
+Avgångar = {"Stockholm":"13:55", "Linköping":"12:45", "Arboga":"16:08", "Södertälje":"13:40", "Tierp":"14:03", "Gävle":"14:30", "Ljusdal":"13:31", "Falun":"13:42",
+            "Örebro":"16:15", "Sala":"15:55", "Sundsvall":"18:08", "Umeå":"19:30", "Mora":"16:03", "Narvik":"17:10", "Eskilstuna":"15:45", "Luleå":"19:38"}
+Avgångar["tid_Nu"] = formatted_time
+
+
+
+def Sorterade_Avgångar():
+    avgångar_sorterade_tid = sorted(Avgångar.items(), key=lambda x:x[1])
+    avgångar_sorterade = dict(avgångar_sorterade_tid)
+    print("Sorterade avgångar efter tid tidigast-senast:")
+    print()
+    for i in avgångar_sorterade:
+        print(f"{i}  {avgångar_sorterade[i]}")
+    print()
+    
+#Nästa 5:
+    key = 'tid_Nu'
+    temp = list(avgångar_sorterade)
+
+    n = 1
+    print("Nästa 5 avgångar är: ")
+    print()
+    for i in range(5):
+        try: 
+            nästa5 = temp[temp.index(key) + n]
+        except (ValueError, IndexError): 
+            nästa5 = None
+        n+=1 
+        print(str(nästa5))
+    print()
+
+
+Sorterade_Avgångar()
+
+
+
+for i in Avgångar:
+    destination = input("Vart vill du resa? ")
+    if destination == f"{i}":
+        print(destination)
+        weather_data = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={destination}&units=imperial&APPID={api_key}")
+
+        print(f"Värdret i {i}: ", weather_data.json())
+        
+    else:
+        print("Det går tyvärr inga tåg dit")
+            
