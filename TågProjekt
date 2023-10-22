@@ -1,21 +1,54 @@
 import datetime
+import time
 import requests
 
 api_key = '57ba6c3a29fcb1bef4d8e0213406d71b' #Nyckel till OpenWeather API
 tid = datetime.datetime.now()
 formatted_time = tid.strftime("%H:%M")
 
+print(formatted_time)
+
+Avgångar_Morgon = {"Stockholm":"05:55", "Linköping":"06:45", "Arboga":"08:08", "Södertälje":"07:40", "Tierp":"09:03", "Gävle":"10:30", "Ljusdal":"05:31", "Falun":"06:42",
+            "Örebro":"09:15", "Sala":"10:55", "Sundsvall":"10:08", "Umeå":"08:30", "Mora":"06:03", "Narvik":"07:10", "Eskilstuna":"09:45", "Luleå":"08:38"}
+
+Avgångar_Dag = {"Stockholm":"11:55", "Linköping":"12:45", "Arboga":"16:08", "Södertälje":"13:40", "Tierp":"14:03", "Gävle":"14:30", "Ljusdal":"13:31", "Falun":"13:42",
+            "Örebro":"16:15", "Sala":"15:55", "Sundsvall":"17:08", "Umeå":"12:30", "Mora":"11:03", "Narvik":"17:10", "Eskilstuna":"15:45", "Luleå":"17:38"}
+
+Avgångar_Kväll = {"Stockholm":"18:55", "Linköping":"19:45", "Arboga":"21:08", "Södertälje":"20:40", "Tierp":"19:03", "Gävle":"23:30", "Ljusdal":"21:31", "Falun":"18:42",
+            "Örebro":"20:15", "Sala":"21:55", "Sundsvall":"18:08", "Umeå":"19:30", "Mora":"18:03", "Narvik":"22:10", "Eskilstuna":"22:45", "Luleå":"23:38"}
+
+Avgångar_Natt = {"Stockholm":"00:55", "Linköping":"01:45", "Arboga":"04:08", "Södertälje":"00:40", "Tierp":"01:03", "Gävle":"04:30", "Ljusdal":"00:31", "Falun":"04:42",
+            "Örebro":"00:15", "Sala":"04:55", "Sundsvall":"00:08", "Umeå":"04:30", "Mora":"00:03", "Narvik":"00:10", "Eskilstuna":"02:45", "Luleå":"04:38"}
+
+
+morning_time = datetime.datetime(tid.year, tid.month, tid.day, 5, 0)
+day_time = datetime.datetime(tid.year, tid.month, tid.day, 11, 0)
+evening_time = datetime.datetime(tid.year, tid.month, tid.day, 17, 0)
+night_time = datetime.datetime(tid.year, tid.month, tid.day, 23, 59)
+
+print(morning_time)
+print(day_time)
+print(evening_time)
+print(night_time)
+
+if morning_time <= tid < day_time:
+    x = Avgångar_Morgon
+elif day_time <= tid < evening_time:
+    x = Avgångar_Dag
+elif evening_time <= tid <= night_time:
+    x = Avgångar_Kväll
+else:
+    print("Kan inte jämföra tiderna")
 
 
 
-Avgångar = {"Stockholm":"13:55", "Linköping":"12:45", "Arboga":"16:08", "Södertälje":"13:40", "Tierp":"14:03", "Gävle":"14:30", "Ljusdal":"13:31", "Falun":"13:42",
-            "Örebro":"16:15", "Sala":"15:55", "Sundsvall":"18:08", "Umeå":"19:30", "Mora":"16:03", "Narvik":"17:10", "Eskilstuna":"15:45", "Luleå":"19:38"}
-Avgångar["tid_Nu"] = formatted_time
 
+
+x["tid_Nu"] = formatted_time
 
 
 def Sorterade_Avgångar():
-    avgångar_sorterade_tid = sorted(Avgångar.items(), key=lambda x:x[1])
+    avgångar_sorterade_tid = sorted(x.items(), key=lambda x:x[1])
     avgångar_sorterade = dict(avgångar_sorterade_tid)
     print("Sorterade avgångar efter tid tidigast-senast:")
     print()
@@ -39,16 +72,15 @@ def Sorterade_Avgångar():
         print(str(nästa5))
     print()
 
-
 Sorterade_Avgångar()
 
 
 
-for i in Avgångar:
+for i in x:
     destination = input("Vart vill du resa? ")
     if destination == f"{i}":
         print(destination)
-        weather_data = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={destination}&units=imperial&APPID={api_key}")
+        weather_data = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={destination}&units=metric&lang=sv&APPID={api_key}")
 
         print(f"Värdret i {i}: ", weather_data.json())
         
