@@ -17,6 +17,7 @@ tid = datetime.datetime.now()
 formatted_time = tid.strftime("%H:%M")
 print("KLockan är: " + formatted_time)
 
+
 #Formaterar tiden till formatet vi vill ha
 morning_time = datetime.datetime(tid.year, tid.month, tid.day, 5, 0)
 day_time = datetime.datetime(tid.year, tid.month, tid.day, 11, 0)
@@ -25,26 +26,26 @@ night_time = datetime.datetime(tid.year, tid.month, tid.day, 23, 59)
 
 #Avgör vilken fil med tågtider som ska användas, beroende på tiden
 if morning_time <= tid < day_time:
-    avgångar("avgångar_morgon.txt")
+    avgångar_dict = avgångar("avgångar_morgon.txt")
 
 elif day_time <= tid < evening_time:
-    avgångar("avgångar_dag.txt")
+    avgångar_dict = avgångar("avgångar_dag.txt")
 
 elif evening_time <= tid <= night_time:
-    avgångar("avgångar_kväll.txt")
+    avgångar_dict = avgångar("avgångar_kväll.txt")
 
 elif tid < morning_time:
-    avgångar("avgångar_natt.txt")
+    avgångar_dict = avgångar("avgångar_natt.txt")
 
 
 else:
     print("Kan inte jämföra tiderna")
 
-line["tid_Nu"] = formatted_time
+avgångar_dict["tid_Nu"] = formatted_time
 
 
 def Sorterade_Avgångar():
-    avgångar_sorterade_tid = sorted(line.items(), key=lambda line:line[1])
+    avgångar_sorterade_tid = sorted(avgångar_dict.items(), key=lambda avgångar_dict:avgångar_dict[1])
     avgångar_sorterade = dict(avgångar_sorterade_tid)
     print("Sorterade avgångar efter tid tidigast-senast:")
     print()
@@ -70,11 +71,15 @@ def Sorterade_Avgångar():
 
 Sorterade_Avgångar()
 
+Avgångar_Morgon = avgångar("avgångar_morgon.txt")
+Avgångar_Dag = avgångar("avgångar_dag.txt")
+Avgångar_Kväll = avgångar("avgångar_kväll.txt")
+Avgångar_Natt =  avgångar("avgångar_natt.txt")
 
 def resa():
     destination = input("Vart vill du resa? ")
     
-    for i in x:
+    for i in avgångar_dict:
         if destination == f"{i}":
             print("Dagens avgångar till "+destination+ " går dessa tider: ")
             print(Avgångar_Morgon[destination])
@@ -92,7 +97,7 @@ def resa():
             find_temperature = weather_data["main"]
             temperature = find_temperature["temp"]
             
-            print(f"{description}, temperatur: {temperature}C")
+            print(f"{description}, temperatur: {temperature}{chr(176)}C")
             
             
 resa()     
