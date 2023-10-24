@@ -1,0 +1,84 @@
+import datetime
+import time
+import requests
+
+#gör om textfilen till en dicttionary
+
+def avgångar(filename):
+    with open(filename, "r", encoding = "utf-8") as file:
+        for line in file:
+            line = line.strip().split(",")
+            line = [x.split('":"') for x in line]
+            line = {a.replace('"', "" ) : b.replace('"', "" ) for a, b in line}
+    return line
+
+api_key = '57ba6c3a29fcb1bef4d8e0213406d71b' #Nyckel till OpenWeather API
+tid = datetime.datetime.now()
+formatted_time = tid.strftime("%H:%M")
+
+
+morning_time = datetime.datetime(tid.year, tid.month, tid.day, 5, 0)
+day_time = datetime.datetime(tid.year, tid.month, tid.day, 11, 0)
+evening_time = datetime.datetime(tid.year, tid.month, tid.day, 17, 0)
+night_time = datetime.datetime(tid.year, tid.month, tid.day, 23, 59)
+
+
+if morning_time <= tid < day_time:
+    avgångar("avgångar_morgon.txt")
+
+elif day_time <= tid < evening_time:
+    avgångar("avgångar_dag.txt")
+
+elif evening_time <= tid <= night_time:
+    avgångar("avgångar_kväll.txt")
+
+elif tid < morning_time:
+    avgångar("avgångar_natt.txt")
+
+
+else:
+    print("Kan inte jämföra tiderna")
+
+line["tid_Nu"] = formatted_time
+
+
+def Sorterade_Avgångar():
+    avgångar_sorterade_tid = sorted(line.items(), key=lambda line:line[1])
+    avgångar_sorterade = dict(avgångar_sorterade_tid)
+    print("Sorterade avgångar efter tid tidigast-senast:")
+    print()
+    for i in avgångar_sorterade:
+        print(f"{i}  {avgångar_sorterade[i]}")
+    print()
+    
+#Nästa 5:
+    key = 'tid_Nu'
+    temp = list(avgångar_sorterade)
+
+    n = 1
+    print("Nästa 5 avgångar är: ")
+    print()
+    for i in range(5):
+        try: 
+            nästa5 = temp[temp.index(key) + n]
+        except (ValueError, IndexError): 
+            nästa5 = None
+        n+=1 
+        print(str(nästa5))
+    print()
+
+Sorterade_Avgångar()
+
+
+
+for i in line:
+    destination = input("Vart vill du resa? ")
+    if destination == f"{i}":
+        print(destination)
+        weather_data = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={destination}&units=metric&lang=sv&APPID={api_key}")
+
+        print(f"Värdret i {i}: ", weather_data.json())
+        
+    else:
+        print("Det går tyvärr inga tåg dit")
+            
