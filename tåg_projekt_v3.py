@@ -41,7 +41,7 @@ elif tid < morning_time:
 else:
     print("Kan inte jämföra tiderna")
 
-avgångar_dict["tid_Nu"] = formatted_time
+#avgångar_dict["tid_Nu"] = formatted_time
 
 
 def Sorterade_Avgångar():
@@ -53,6 +53,9 @@ def Sorterade_Avgångar():
         print(f"{i}  {avgångar_sorterade[i]}")
     print()
     
+    avgångar_dict["tid_Nu"] = formatted_time
+    avgångar_sorterade_tid = sorted(avgångar_dict.items(), key=lambda avgångar_dict:avgångar_dict[1])
+    avgångar_sorterade = dict(avgångar_sorterade_tid)
 #Nästa 5:
     key = 'tid_Nu'
     temp = list(avgångar_sorterade)
@@ -98,6 +101,8 @@ def resa():
             temperature = find_temperature["temp"]
             
             print(f"{description}, temperatur: {temperature}{chr(176)}C")
-            
-            
+            break
+        else:
+            print("Det går tyvärr inga tåg dit")
+            break
 resa()     
